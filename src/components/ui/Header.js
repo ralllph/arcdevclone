@@ -10,6 +10,10 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Button from "@material-ui/core/Button";
 import {Link} from "react-router-dom"
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+
+
 
 //elevate scroll app bar makes app bar float when scrolling
 function ElevationScroll(props) {
@@ -69,7 +73,27 @@ const Header = (props)=>{
     const classes = useStyles();
     //state to mangeage change of tabs in material ui docs
     const [value,setValue] = useState(0);
+    //The following state is for menu that appears when you hover over a tab in the header. e.g service tab
+    //anchorEl is to keep state of the dom element we clicked on(requiredinn MUI docs (check Simple menu)) e.g the services tab 
+    const [anchorEl, setAnchorEl] = useState(null);
+    //state to control if the menu is open or not
+    const [open,setOpen] = useState(false);
 
+    //This handle click is for the menu (Mui docs). The menu here is displayed as a pop up
+    const handleClick = (e)=>{
+      //the element clicked is in the current target
+      setAnchorEl(e.currentTarget);
+      //also open the menu
+      setOpen(true);
+    }
+
+    //closing the menu
+    const handleClose =(e)=>{
+      //set back the element to null meaning you don't need the pop up to be displayed on any element since it's closed
+      setAnchorEl(null);
+      //menu closed 
+      setOpen(false);
+    }
     //handle change of tabs method(material ui docs)
     const handleChnage = (event,newValue)=>{
         setValue(newValue);
@@ -108,18 +132,27 @@ const Header = (props)=>{
               <Tabs className={classes.tabContainer} value={value} onChange={handleChnage}>
                 {/*  component tells material ui that you use link in react router*/}
                 <Tab className={classes.tab}  label="Home" component = {Link}  to="/"/>
-                <Tab className={classes.tab}  label="Services"  component = {Link} to="/services"/>
+                {/*Services tab would display a menu to show that you can link to mobile app, and other routes*/}
+                {/*aria owns and has popup helps accessiblity for visually impaired users*/}
+                {/*Quick note: the handle click passes the element clicked to anchorEl*/}
+                <Tab aria-owns={anchorEl ? "simple-menu" : undefined} onMouseOver={(e)=> handleClick(e)}  aria-haspopup={anchorEl? "true" : undefined} className={classes.tab}  label="Services"  component = {Link} to="/services"/>
                 <Tab className={classes.tab}  label="The revolution" component = {Link} to="/revolution"/>
                 <Tab className={classes.tab}  label="About us" component = {Link} to="/about" />
                 <Tab className={classes.tab}  label="Contact us" component = {Link} to="/contact" />
               </Tabs>
               <Button variant="contained" color="secondary" className={classes.button}>Free Estimate</Button>
+              {/* set up menuu. Can be anywhere reall. id prop should match aria-owns */}
+              {/* To close the menu when the tab is not hovered on,. Accordng to docs you need to use menulistprops*/}
+              <Menu id="simple-menu"  anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{onMouseLeave:handleClose}}>
+                  <MenuItem  onClick={handleClose} >Custom Software Development</MenuItem>
+                  <MenuItem  onClick={handleClose} >Mobile App Development</MenuItem>
+                  <MenuItem  onClick={handleClose} >Website Development</MenuItem>
+              </Menu>
             </Toolbar>
         </AppBar>
         </ElevationScroll>
         {/*  The point of this div and the use styles is to push contents below the app bar since it's position is fixed */}
         <div className={classes.toolBarMargin}></div>
-        <h2>hello</h2>
         </>
     )
 }
