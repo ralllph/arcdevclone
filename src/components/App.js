@@ -20,7 +20,7 @@ const App =()=>{
               <Route path="/" element={<Home />} />
               <Route path="/services" element={<Services/>} />
               <Route path="/customsoftware" element={<CustomSoftware/>} />
-              <Route path="/mobileaps" element={<MobileApp/>} />
+              <Route path="/mobileapps" element={<MobileApp/>} />
               <Route path="/websites" element={<Websites/>} />
               <Route path="/revolution" element={<Revoultion/>} />
               <Route path="/about" element={<About/>} />
